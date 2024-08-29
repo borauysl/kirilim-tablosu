@@ -1,4 +1,4 @@
-﻿@model List<odev.Controllers.GroupedData>
+@model List<odev.Controllers.GroupedData>
 @{
     Layout = null;
     ViewData["Title"] = "Ödev Görüntüleme Paneli";
@@ -38,7 +38,7 @@
             .table th {
                 border: 1px solid #ddd;
                 padding: 10px;
-                text-align: center; 
+                text-align: center;
                 background-color: #4CAF50;
                 color: white;
             }
@@ -46,7 +46,7 @@
             .table td {
                 border: 1px solid #ddd;
                 padding: 10px;
-                
+                text-align: center;
             }
 
         .group {
@@ -73,7 +73,21 @@
         .group .toggle-btn {
             cursor: pointer;
             font-weight: bold;
-        }      
+        }
+
+        /* Alt kırılımları ortalamak için düzenlemeler */
+        .collapsible-content {
+            margin-left: 20px;
+            text-align: left;
+        }
+
+            .collapsible-content .collapsible-content {
+                margin-left: 40px;
+            }
+
+                .collapsible-content .collapsible-content .collapsible-content {
+                    margin-left: 60px;
+                }
     </style>
 </head>
 <body>
@@ -92,21 +106,23 @@
                     @foreach (var group1 in Model)
                     {
                         <tr class="group" onclick="toggleVisibility('group1-@group1.Kırılım1', this)">
-                            <td colspan="2">
+                            <td>
                                 <span class="toggle-btn"></span>@group1.Kırılım1
                             </td>
+                            <td>@group1.ToplamBorc</td>
                         </tr>
-                        <tr class="hidden" id="group1-@group1.Kırılım1">
+                        <tr class="hidden collapsible-content" id="group1-@group1.Kırılım1">
                             <td colspan="2">
                                 <table class="table table-bordered">
                                     @foreach (var group2 in group1.Kırılım2Groups)
                                     {
                                         <tr class="group" onclick="toggleVisibility('group2-@group2.Kırılım2', this)">
-                                            <td colspan="2" style="padding-left: 20px;">
+                                            <td style="padding-left: 20px;">
                                                 <span class="toggle-btn"></span>@group2.Kırılım2
                                             </td>
+                                            <td>@group2.ToplamBorc</td>
                                         </tr>
-                                        <tr class="hidden" id="group2-@group2.Kırılım2">
+                                        <tr class="hidden collapsible-content" id="group2-@group2.Kırılım2">
                                             <td colspan="2">
                                                 <table class="table table-bordered">
                                                     @foreach (var group3 in group2.Kırılım3Groups)
