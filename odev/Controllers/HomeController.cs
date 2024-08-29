@@ -42,27 +42,29 @@ namespace odev.Controllers
             }
 
             var groupedData = veriListesi
-                .GroupBy(x => GetFirstThreeDigits(x.HesapKodu))
-                .Select(g => new GroupedData
-                {
-                    Kırılım1 = g.Key,
-                    ToplamBorc = g.Sum(x => x.ToplamBorc),
-                    Kırılım2Groups = g
-                        .GroupBy(x => GetFirstFiveDigits(x.HesapKodu))
-                        .Select(gg => new GroupedData
-                        {
-                            Kırılım2 = gg.Key,
-                            ToplamBorc = gg.Where(x => x.HesapKodu != gg.Key).Sum(x => x.ToplamBorc),
-                            Kırılım3Groups = gg
-                                .Select(x => new GroupedData
-                                {
-                                    Kırılım3 = x.HesapKodu,
-                                    ToplamBorc = x.ToplamBorc
-                                })
-                                .Where(x => x.Kırılım3 != gg.Key)
-                                .ToList()
-                        }).ToList()
-                }).ToList();
+       .GroupBy(x => GetFirstThreeDigits(x.HesapKodu))
+       .Select(g => new GroupedData
+       {
+           Kırılım1 = g.Key,
+           ToplamBorc = g
+               .GroupBy(x => GetFirstFiveDigits(x.HesapKodu))
+               .Sum(gg => gg.Where(x => x.HesapKodu != gg.Key).Sum(x => x.ToplamBorc)),
+           Kırılım2Groups = g
+               .GroupBy(x => GetFirstFiveDigits(x.HesapKodu))
+               .Select(gg => new GroupedData
+               {
+                   Kırılım2 = gg.Key,
+                   ToplamBorc = gg.Where(x => x.HesapKodu != gg.Key).Sum(x => x.ToplamBorc),
+                   Kırılım3Groups = gg
+                       .Select(x => new GroupedData
+                       {
+                           Kırılım3 = x.HesapKodu,
+                           ToplamBorc = x.ToplamBorc
+                       })
+                       .Where(x => x.Kırılım3 != gg.Key)
+                       .ToList()
+               }).ToList()
+       }).ToList();
 
             return View(groupedData);
         }
