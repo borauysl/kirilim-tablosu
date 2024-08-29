@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -8,7 +8,7 @@ namespace odev.Controllers
 {
     public class HomeController : Controller
     {
-        string connectionString = "Server=localhost;Database=odev;Uid=root;Pwd=1234;";
+        string connectionString = "Server=etrsoftodev.mysql.database.azure.com;Database=odev;Uid=superuser;Pwd=Bora2003!;";
 
         public ActionResult Cikti()
         {
@@ -37,7 +37,6 @@ namespace odev.Controllers
                 }
                 catch (Exception ex)
                 {
-                    
                     Console.WriteLine($"Veri çekme hatası: {ex.Message}");
                 }
             }
@@ -47,17 +46,21 @@ namespace odev.Controllers
                 .Select(g => new GroupedData
                 {
                     Kırılım1 = g.Key,
+                    ToplamBorc = g.Sum(x => x.ToplamBorc),
                     Kırılım2Groups = g
                         .GroupBy(x => GetFirstFiveDigits(x.HesapKodu))
                         .Select(gg => new GroupedData
                         {
                             Kırılım2 = gg.Key,
+                            ToplamBorc = gg.Where(x => x.HesapKodu != gg.Key).Sum(x => x.ToplamBorc),
                             Kırılım3Groups = gg
                                 .Select(x => new GroupedData
                                 {
                                     Kırılım3 = x.HesapKodu,
                                     ToplamBorc = x.ToplamBorc
-                                }).ToList()
+                                })
+                                .Where(x => x.Kırılım3 != gg.Key)
+                                .ToList()
                         }).ToList()
                 }).ToList();
 
